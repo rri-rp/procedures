@@ -12,44 +12,54 @@ Generate English uppercase characters from `A` to `Z`, with a line feed after ea
 
 ```asm
 section .data
-    character db 'A'
-    newline   db 10
+    character db 'A'       ; stores the current uppercase letter
+    newline   db 10        ; ASCII line feed used after each character
 
 section .text
-    global _start
+    global _start          ; makes _start visible to the linker
 
 _start:
+
 print_loop:
+    ; Display the current character.
     call print_character
+
+    ; Move the cursor to the next line.
     call print_newline
 
+    ; Stop after the letter Z has been printed.
     cmp byte [character], 'Z'
     je exit_program
 
+    ; Move to the next ASCII uppercase character.
     inc byte [character]
+
+    ; Repeat the process for the next letter.
     jmp print_loop
 
 print_character:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, character
-    mov edx, 1
-    int 0x80
-    ret
+    ; Print one character from the character variable.
+    mov eax, 4             ; sys_write system call
+    mov ebx, 1             ; file descriptor 1 = standard output
+    mov ecx, character     ; address of the character to display
+    mov edx, 1             ; display exactly one byte
+    int 0x80               ; request the kernel to write the character
+    ret                    ; return to the instruction after CALL
 
 print_newline:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, newline
-    mov edx, 1
-    int 0x80
-    ret
+    ; Print one line-feed character after the letter.
+    mov eax, 4             ; sys_write system call
+    mov ebx, 1             ; file descriptor 1 = standard output
+    mov ecx, newline       ; address of the line-feed character
+    mov edx, 1             ; display exactly one byte
+    int 0x80               ; request the kernel to write the line feed
+    ret                    ; return to the instruction after CALL
 
 exit_program:
-    mov eax, 1
-    mov ebx, 0
-    int 0x80
-```
+    ; End the program after Z has been displayed.
+    mov eax, 1             ; sys_exit system call
+    mov ebx, 0             ; return status 0 = successful execution
+    int 0x80               ; request the kernel to terminate the program
 
 ## Challenges
 
