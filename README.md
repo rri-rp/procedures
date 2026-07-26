@@ -10,6 +10,8 @@ Generate English uppercase characters from `A` to `Z`, with a line feed after ea
 
 ## Assembly Code
 
+## Assembly Code
+
 ```asm
 section .data
     character db 'A'       ; stores the current uppercase letter
@@ -60,6 +62,7 @@ exit_program:
     mov eax, 1             ; sys_exit system call
     mov ebx, 0             ; return status 0 = successful execution
     int 0x80               ; request the kernel to terminate the program
+```
 
 ## Challenges
 
